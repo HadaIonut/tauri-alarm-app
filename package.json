@@ -12,10 +12,15 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
     "@tauri-apps/cli": "^1.0.0-rc.13",
+    "autoprefixer": "^10.4.7",
+    "node-sass": "^7.0.1",
     "svelte": "^3.44.0",
+    "svelte-preprocess": "^4.10.7",
     "vite": "^2.9.9"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.0.0-rc.6"
+    "@tauri-apps/api": "^1.0.0-rc.6",
+    "svelte-materialify": "^0.3.11",
+    "svelty-picker": "^1.3.0"
   }
 }

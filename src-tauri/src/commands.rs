@@ -1,3 +1,4 @@
+use std::time::SystemTime;
 use chrono::{Duration, Local};
 use rand::Rng;
 use tauri::State;
@@ -24,5 +25,9 @@ pub fn generate_password(length: u32, state: State<ThreadComsState>) -> String{
     )).unwrap();
 
     result
+}
+
+pub fn create_new_alarm(state: State<ThreadComsState>, message: String, timestamp: String) {
+    println!("{}, {}", message, timestamp);
 }
 

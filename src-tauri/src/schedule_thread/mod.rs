@@ -14,13 +14,14 @@ pub fn schedule_alert(rx: Receiver<schedule_message::ScheduleMessage>) {
             received = received_wrapped.unwrap();
             println!("Received: {}", received.message);
             time_stamp_map.insert(received.clone().id, received);
-
+            //TODO: fire time_stamp_map_changed event
         }
 
         if time_stamp_map.len() > 0 {
             time_stamp_map.retain(|_key, val| -> bool {
                 if val.execute_time_stamp.timestamp() <= Local::now().timestamp() {
                     println!("Executed: {}", val.message);
+                    //TODO: fire time_stamp_map_changed event
                 }
 
                 val.execute_time_stamp.timestamp() > Local::now().timestamp()
