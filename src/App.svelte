@@ -13,16 +13,35 @@
     Row,
     TextField
   } from "svelte-materialify";
-  import {formatDate} from "./utils/utils.js";
-
-  let input = '8';
-  let result = 'buton';
+  import {addHours, addMinutes, formatDate} from "./utils/utils.js";
   let myDate = formatDate(new Date(), 'y-M-d h:m');
+  let alarmMessage = '';
+  let alarmIn = '';
 
   const handleClick = async () => {
-    result = await invoke('generate_password', {
-      length: +input,
-    });
+    let alarmMatch = alarmIn.match(/^(\d+h)?(\d+m)?$/);
+    let alarmInDate = new Date();
+    if (alarmIn && alarmMatch) {
+      if (alarmMatch[1]) {
+        let hours = [...alarmMatch[1]];
+        hours.pop();
+        hours = hours.join('');
+
+        alarmInDate = addHours(alarmInDate, Number(hours))
+      }
+      if (alarmMatch[2]) {
+        let minute = [...alarmMatch[2]];
+        minute.pop();
+        minute = minute.join('');
+
+        alarmInDate = addMinutes(alarmInDate, Number(minute))
+      }
+
+      alarmInDate = formatDate(alarmInDate, 'y-M-d h:m');
+      return await invoke('create_new_alarm', {message: alarmMessage, timestamp: alarmInDate})
+    }
+
+    return await invoke('create_new_alarm', {message: alarmMessage, timestamp: myDate})
   };
 </script>
 
@@ -47,20 +66,20 @@
           </CardTitle>
 
           <CardText>
-            <TextField outlined>Alarm message</TextField>
+            <TextField outlined bind:value={alarmMessage}>Alarm message</TextField>
             <Row>
               <Col class="time-picker-col">
                 <SveltyPicker inputClasses="form-control" format="yyyy-mm-dd hh:ii" bind:value={myDate}></SveltyPicker>
               </Col>
 
               <Col>
-                <TextField outlined>Set alarm in</TextField>
+                <TextField outlined bind:value={alarmIn}>Set alarm in</TextField>
               </Col>
             </Row>
           </CardText>
 
           <CardActions>
-            <Button outlined>Add Alarm</Button>
+            <Button outlined on:click={handleClick}>Add Alarm</Button>
           </CardActions>
         </Card>
 

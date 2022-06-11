@@ -1,33 +1,32 @@
-use std::time::SystemTime;
-use chrono::{Duration, Local};
-use rand::Rng;
+use chrono::{DateTime, Local, TimeZone};
 use tauri::State;
 use crate::ScheduleMessage;
 use crate::thread_coms_state::ThreadComsState;
 
-static CHARS: [char; 70] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9','a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-    't', 'u', 'v', 'w', 'x', 'y', 'z','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '!','@','#','$','%','^','&','*'];
+fn timestamp_from_date_and_time(date: String, time: String) -> DateTime<Local> {
+    let mut date_time_array: [u32; 5] = [0;5];
 
-#[tauri::command]
-pub fn generate_password(length: u32, state: State<ThreadComsState>) -> String{
-    let mut rng = rand::thread_rng();
-    let mut result = String::new();
-    for _x in 0..length {
-        result.push(CHARS[rng.gen_range(0..70)]);
+    let mut index = 0;
+    for s in date.split("-") {
+        date_time_array[index] = s.to_string().parse::<u32>().unwrap();
+        index += 1;
     }
 
-    let now = Local::now();
+    for s in time.split(":") {
+        date_time_array[index] = s.to_string().parse::<u32>().unwrap();
+        index += 1;
+    }
 
-    state.sender.send(ScheduleMessage::new(
-        "caca".to_string(),
-        now + Duration::seconds(20)
-    )).unwrap();
-
-    result
+    Local.ymd(date_time_array[0] as i32, date_time_array[1], date_time_array[2])
+        .and_hms(date_time_array[3], date_time_array[4], 0)
 }
 
+#[tauri::command]
 pub fn create_new_alarm(state: State<ThreadComsState>, message: String, timestamp: String) {
-    println!("{}, {}", message, timestamp);
+    let vec: Vec<&str> = timestamp.split(" ").collect();
+    state.sender.send(ScheduleMessage::new(
+        message,
+        timestamp_from_date_and_time(vec[0].parse().unwrap(), vec[1].parse().unwrap())
+    )).unwrap();
 }
 

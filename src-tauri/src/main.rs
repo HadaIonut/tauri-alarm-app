@@ -22,7 +22,7 @@ fn main() {
         .manage(thread_coms_state::ThreadComsState {
             sender
         })
-        .invoke_handler(tauri::generate_handler![commands::generate_password])
+        .invoke_handler(tauri::generate_handler![commands::create_new_alarm])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
