@@ -14,9 +14,20 @@
     TextField
   } from "svelte-materialify";
   import {addHours, addMinutes, formatDate} from "./utils/utils.js";
+  import {listen} from "@tauri-apps/api/event";
   let myDate = formatDate(new Date(), 'y-M-d h:m');
   let alarmMessage = '';
   let alarmIn = '';
+
+  invoke('start_schedule_thread');
+
+  listen('alarm-added', event => {
+    console.log("added: ", event.payload);
+  })
+
+  listen('alarm-removed', event => {
+    console.log("removed: ",event.payload);
+  })
 
   const handleClick = async () => {
     let alarmMatch = alarmIn.match(/^(\d+h)?(\d+m)?$/);

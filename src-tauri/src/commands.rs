@@ -1,7 +1,6 @@
 use chrono::{DateTime, Local, TimeZone};
-use tauri::State;
-use crate::ScheduleMessage;
-use crate::thread_coms_state::ThreadComsState;
+use tauri::{State, Window, Wry};
+use crate::{schedule_thread, ScheduleMessage};
 
 fn timestamp_from_date_and_time(date: String, time: String) -> DateTime<Local> {
     let mut date_time_array: [u32; 5] = [0;5];
@@ -22,11 +21,15 @@ fn timestamp_from_date_and_time(date: String, time: String) -> DateTime<Local> {
 }
 
 #[tauri::command]
-pub fn create_new_alarm(state: State<ThreadComsState>, message: String, timestamp: String) {
+pub fn create_new_alarm(to_start_alarms_state: State<schedule_thread::RunningAlarms>, window: Window<Wry>, message: String, timestamp: String) {
     let vec: Vec<&str> = timestamp.split(" ").collect();
-    state.sender.send(ScheduleMessage::new(
-        message,
-        timestamp_from_date_and_time(vec[0].parse().unwrap(), vec[1].parse().unwrap())
-    )).unwrap();
+    let msg = ScheduleMessage::new(
+            message,
+            timestamp_from_date_and_time(vec[0].parse().unwrap(), vec[1].parse().unwrap())
+        );
+    let alarms_payload = schedule_thread::alarms_changed_payload::AlarmRemovedOrAddedPayload::new(msg.clone());
+    to_start_alarms_state.time_stamp_map.lock().unwrap().insert(msg.id.clone(), msg);
+    window.emit("alarm-added", alarms_payload).unwrap();
+
 }
 
