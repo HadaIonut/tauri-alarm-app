@@ -25,7 +25,7 @@ pub fn start_schedule_thread(to_start_alarms_state: State<RunningAlarms>, window
                 data.retain(|_key, val| -> bool {
                     if val.execute_time_stamp.timestamp() <= Local::now().timestamp() {
                         println!("Executed: {}", val.message);
-                        let payload = alarms_changed_payload::AlarmRemovedOrAddedPayload::new(val.clone());
+                        let payload = val.to_alarm_payload();
                         window.emit("alarm-removed",  payload).unwrap();
                     }
 

@@ -17,7 +17,10 @@ impl SerializableScheduleMessage {
     }
 
     pub fn to_string(&self) -> String {
-        "{".to_string() + &*format!("id:{}, message:{}, execute_time_stamp:{}", self.id, self.message, self.execute_time_stamp) + &*"}".to_string()
+        "{".to_string() + &*format!("id:{}, message:{}, execute_time_stamp:{}",
+                                    self.id,
+                                    self.message,
+                                    self.execute_time_stamp) + &*"}".to_string()
     }
 }
 

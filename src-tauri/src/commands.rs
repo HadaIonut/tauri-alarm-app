@@ -30,7 +30,7 @@ pub fn create_new_alarm(to_start_alarms_state: State<schedule_thread::RunningAla
             message,
             timestamp_from_date_and_time(vec[0].parse().unwrap(), vec[1].parse().unwrap())
         );
-    let alarms_payload = schedule_thread::alarms_changed_payload::AlarmRemovedOrAddedPayload::new(msg.clone());
+    let alarms_payload = msg.to_alarm_payload();
     to_start_alarms_state.time_stamp_map.lock().unwrap().insert(msg.id.clone(), msg);
     window.emit("alarm-added", alarms_payload).unwrap();
 
@@ -41,12 +41,11 @@ pub fn init_file_save(to_start_alarms_state: State<schedule_thread::RunningAlarm
     let state_clone = Arc::clone(&to_start_alarms_state.time_stamp_map);
 
     window.listen_global("alarm-write", move|_event| {
-        println!("event!");
         let mut file = File::create("foo.txt").expect("error");
 
         let mut schedule_string: String = "[".to_string();
         for value in state_clone.lock().unwrap().values() {
-            let serialized = schedule_thread::alarms_changed_payload::SerializableScheduleMessage::new(value.clone());
+            let serialized = value.serialize();
             schedule_string = schedule_string + &*serialized.to_string();
             schedule_string = schedule_string + ",";
         }
