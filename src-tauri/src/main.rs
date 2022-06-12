@@ -13,7 +13,9 @@ fn main() {
         .manage(schedule_thread::RunningAlarms::default())
         .invoke_handler(tauri::generate_handler![
             commands::create_new_alarm,
-            schedule_thread::start_schedule_thread])
+            schedule_thread::start_schedule_thread,
+            commands::init_file_save,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

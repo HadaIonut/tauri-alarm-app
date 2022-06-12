@@ -1,5 +1,8 @@
+use std::fs::File;
+use std::io::Write;
+use std::sync::Arc;
 use chrono::{DateTime, Local, TimeZone};
-use tauri::{State, Window, Wry};
+use tauri::{Manager, State, Window, Wry};
 use crate::{schedule_thread, ScheduleMessage};
 
 fn timestamp_from_date_and_time(date: String, time: String) -> DateTime<Local> {
@@ -33,3 +36,25 @@ pub fn create_new_alarm(to_start_alarms_state: State<schedule_thread::RunningAla
 
 }
 
+#[tauri::command]
+pub fn init_file_save(to_start_alarms_state: State<schedule_thread::RunningAlarms>, window: Window<Wry>) {
+    let state_clone = Arc::clone(&to_start_alarms_state.time_stamp_map);
+
+    window.listen_global("alarm-write", move|_event| {
+        println!("event!");
+        let mut file = File::create("foo.txt").expect("error");
+
+        let mut schedule_string: String = "[".to_string();
+        for value in state_clone.lock().unwrap().values() {
+            let serialized = schedule_thread::alarms_changed_payload::SerializableScheduleMessage::new(value.clone());
+            schedule_string = schedule_string + &*serialized.to_string();
+            schedule_string = schedule_string + ",";
+        }
+        schedule_string.pop();
+        schedule_string = schedule_string + "]";
+
+        if schedule_string == "]" { schedule_string = "".to_string(); }
+
+        file.write_all(schedule_string.as_ref()).expect("TODO: panic message");
+    });
+}

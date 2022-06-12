@@ -15,18 +15,24 @@
   } from "svelte-materialify";
   import {addHours, addMinutes, formatDate} from "./utils/utils.js";
   import {listen} from "@tauri-apps/api/event";
+  import {appWindow, WebviewWindow} from '@tauri-apps/api/window'
+
   let myDate = formatDate(new Date(), 'y-M-d h:m');
   let alarmMessage = '';
   let alarmIn = '';
 
   invoke('start_schedule_thread');
+  invoke('init_file_save');
 
   listen('alarm-added', event => {
     console.log("added: ", event.payload);
+    appWindow.emit('alarm-write', event.payload)
   })
 
   listen('alarm-removed', event => {
-    console.log("removed: ",event.payload);
+    console.log("removed: ", event.payload);
+    appWindow.emit('alarm-write', event.payload)
+
   })
 
   const handleClick = async () => {
@@ -119,6 +125,7 @@
 
   :global(.add-alarm-col) {
     flex-grow: 3;
+
     & > :global(*) {
       margin-bottom: 5px;
     }
