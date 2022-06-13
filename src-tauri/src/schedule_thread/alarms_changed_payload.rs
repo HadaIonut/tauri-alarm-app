@@ -1,6 +1,6 @@
 use crate::{ScheduleMessage};
 
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct SerializableScheduleMessage {
     pub id: String,
     pub message: String,
@@ -16,12 +16,12 @@ impl SerializableScheduleMessage {
         }
     }
 
-    pub fn to_string(&self) -> String {
-        "{".to_string() + &*format!("id:{}, message:{}, execute_time_stamp:{}",
-                                    self.id,
-                                    self.message,
-                                    self.execute_time_stamp) + &*"}".to_string()
+    pub fn to_schedule_message(&self) -> ScheduleMessage {
+        ScheduleMessage::new_from_strings_with_id(self.id.clone(),
+                                                  self.message.clone(),
+                                                  self.execute_time_stamp.clone())
     }
+
 }
 
 #[derive(Clone, serde::Serialize)]

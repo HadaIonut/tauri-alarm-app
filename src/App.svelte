@@ -8,32 +8,18 @@
     CardText,
     CardTitle,
     Col,
-    Input,
     MaterialApp,
     Row,
     TextField
   } from "svelte-materialify";
-  import {addHours, addMinutes, formatDate} from "./utils/utils.js";
+  import {addHours, addMinutes, formatDate, readSaveFile, updateSaveFile} from "./utils/utils.js";
   import {listen} from "@tauri-apps/api/event";
-  import {appWindow, WebviewWindow} from '@tauri-apps/api/window'
+  import {alarms} from "./store/alarms.js";
+  import {onMount} from "svelte";
 
   let myDate = formatDate(new Date(), 'y-M-d h:m');
   let alarmMessage = '';
   let alarmIn = '';
-
-  invoke('start_schedule_thread');
-  invoke('init_file_save');
-
-  listen('alarm-added', event => {
-    console.log("added: ", event.payload);
-    appWindow.emit('alarm-write', event.payload)
-  })
-
-  listen('alarm-removed', event => {
-    console.log("removed: ", event.payload);
-    appWindow.emit('alarm-write', event.payload)
-
-  })
 
   const handleClick = async () => {
     let alarmMatch = alarmIn.match(/^(\d+h)?(\d+m)?$/);
@@ -60,6 +46,25 @@
 
     return await invoke('create_new_alarm', {message: alarmMessage, timestamp: myDate})
   };
+
+  const initAndStartListeners = () => {
+    invoke('start_schedule_thread');
+    invoke('init_file_save');
+    listen('alarm-added', async event => {
+      alarms.append(event.payload.alarm);
+      await updateSaveFile($alarms);
+    });
+    listen('alarm-removed', async event => {
+      alarms.remove(event.payload.alarm.id);
+      await updateSaveFile($alarms);
+    });
+  };
+
+  initAndStartListeners();
+
+  onMount(async () => {
+    alarms.set(await readSaveFile());
+  })
 </script>
 
 <main>
@@ -71,7 +76,9 @@
             List of alarms go here
           </CardTitle>
           <CardText>
-            caca
+            {#each $alarms as alarm }
+              <div>{alarm.message}</div>
+            {/each}
           </CardText>
         </Card>
       </Col>
