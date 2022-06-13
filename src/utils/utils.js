@@ -49,8 +49,14 @@ export const readSaveFile = async () => {
   let data = JSON.parse(await readTextFile(`${await dataDir()}/data.json`));
 
   if (Array.isArray(data)) {
+    data = data.filter((alarm) => {
+      let hasPassed = new Date(alarm.execute_time_stamp).getTime() > Date.now();
+      console.log(hasPassed);
+      //TODO: fire silent alarm, for when it passed with the app offline
+      return hasPassed;
+    });
+
     await invoke('init_file_save', {alarms: data})
-    //TODO: also check if the alarm has expired and fire an alarm
 
     return data;
   } else {
