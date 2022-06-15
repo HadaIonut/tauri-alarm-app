@@ -22,6 +22,7 @@ tauri = { version = "1.0.0-rc.14", features = ["api-all"] }
 chrono = "0.4"
 nanoid = "0.4.0"
 regex = "1"
+soloud = "1.0.2"
 
 [features]
 # by default Tauri runs in production mode
