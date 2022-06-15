@@ -1,9 +1,8 @@
-//format example: y-M-d h:m:s
 import {readTextFile, writeFile} from "@tauri-apps/api/fs";
-import {alarms} from "../store/alarms.js";
 import {dataDir} from "@tauri-apps/api/path";
 import {invoke} from "@tauri-apps/api/tauri";
 
+//format example: y-M-d h:m:s
 export const formatDate = (date, format) => {
   const dateMap = {
     's': 'sec',

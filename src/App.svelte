@@ -2,6 +2,7 @@
   import {invoke} from '@tauri-apps/api/tauri';
   import SveltyPicker from 'svelty-picker'
   import {
+    Alert,
     Button,
     Card,
     CardActions,
@@ -16,12 +17,14 @@
   import {listen} from "@tauri-apps/api/event";
   import {alarms} from "./store/alarms.js";
   import {onMount} from "svelte";
+  import AlertManager from "./AlertManager.svelte";
+  import {alerts} from "./store/alerts.js";
 
   let myDate = formatDate(new Date(), 'y-M-d h:m');
   let alarmMessage = '';
   let alarmIn = '';
 
-  const handleClick = async () => {
+  const addAlarm = async () => {
     let alarmMatch = alarmIn.match(/^(\d+h)?(\d+m)?$/);
     let alarmInDate = new Date();
     if (alarmIn && alarmMatch) {
@@ -56,6 +59,7 @@
     });
     listen('alarm-removed', async event => {
       alarms.remove(event.payload.alarm.id);
+      alerts.addAlert({message: event.payload.alarm.message});
       await updateSaveFile($alarms);
     });
   };
@@ -65,11 +69,14 @@
   onMount(async () => {
     alarms.set(await readSaveFile());
   })
+
+  const trigger_alert = () => {
+  }
 </script>
 
 <main>
-  <MaterialApp style="height: 100%">
-    <Row style="height: 100%">
+  <MaterialApp class="full-height">
+    <Row class="full-height">
       <Col>
         <Card>
           <CardTitle>
@@ -85,7 +92,7 @@
 
       <Col class="add-alarm-col">
         <Card>
-          <CardTitle style="justify-content: center">
+          <CardTitle class="justify-center">
             <span>Add an alert here:</span>
           </CardTitle>
 
@@ -103,14 +110,14 @@
           </CardText>
 
           <CardActions>
-            <Button outlined on:click={handleClick}>Add Alarm</Button>
+            <Button outlined on:click={addAlarm}>Add Alarm</Button>
           </CardActions>
         </Card>
 
       </Col>
     </Row>
+    <AlertManager/>
   </MaterialApp>
-
 </main>
 
 <style lang="scss">
@@ -142,6 +149,14 @@
     & > :global(*) {
       margin-bottom: 5px;
     }
+  }
+
+  .full-height {
+    height: 100%;
+  }
+
+  .justify-center {
+    justify-content: center
   }
 
   main {
