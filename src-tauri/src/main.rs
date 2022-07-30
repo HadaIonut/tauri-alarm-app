@@ -15,6 +15,7 @@ fn main() {
             commands::create_new_alarm,
             schedule_thread::start_schedule_thread,
             commands::init_file_save,
+            commands::remove_alarm_by_id
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

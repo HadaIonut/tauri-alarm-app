@@ -12,6 +12,13 @@ pub fn create_new_alarm(to_start_alarms_state: State<schedule_thread::RunningAla
 }
 
 #[tauri::command]
+pub fn remove_alarm_by_id(to_start_alarms_state: State<schedule_thread::RunningAlarms>, window: Window<Wry>, id: String) {
+    print!("here");
+    let removed = to_start_alarms_state.time_stamp_map.lock().unwrap().remove(&id);
+    window.emit("alarm-removed", removed.unwrap().to_alarm_payload()).unwrap();
+}
+
+#[tauri::command]
 pub fn init_file_save(to_start_alarms_state: State<schedule_thread::RunningAlarms>, alarms:Vec<SerializableScheduleMessage>) {
     let mut locked_state = to_start_alarms_state.time_stamp_map.lock().unwrap();
     for alarm in alarms {

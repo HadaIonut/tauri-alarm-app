@@ -2,7 +2,6 @@
   import {invoke} from '@tauri-apps/api/tauri';
   import SveltyPicker from 'svelty-picker'
   import {
-    Alert,
     Button,
     Card,
     CardActions,

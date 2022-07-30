@@ -1,5 +1,6 @@
 <script>
   import {onDestroy} from "svelte";
+  import {invoke} from '@tauri-apps/api/tauri';
 
   export let alarm;
   let alarmIn = ''
@@ -70,6 +71,7 @@
   <div class="time-stamp">
     {alarmIn}
   </div>
+  <div on:click={() => invoke('remove_alarm_by_id', {id: alarm.id})}>X</div>
 </div>
 
 <style lang="scss">
