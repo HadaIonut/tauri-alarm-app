@@ -70,20 +70,19 @@
   onMount(async () => {
     alarms.set(await readSaveFile());
   })
-
-  const trigger_alert = () => {
-  }
 </script>
 
 <main>
   <MaterialApp class="full-height">
     <Row>
       <Col>
-        <Card class="full-height">
+        <Card class="alarm-card">
           <CardTitle>
-            List of alarms go here
+            <span class="card-title">
+              List of alarms go here
+            </span>
           </CardTitle>
-          <CardText>
+          <CardText class="alarm-container">
             {#each $alarms as alarm }
               <AlarmCard alarm="{alarm}"></AlarmCard>
             {/each}
@@ -94,7 +93,7 @@
       <Col class="add-alarm-col">
         <Card>
           <CardTitle class="justify-center">
-            <span>Add an alert here:</span>
+            <span class="card-title">Add an alert here:</span>
           </CardTitle>
 
           <CardText>
@@ -127,6 +126,22 @@
   :root {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  :global(.alarm-container) {
+    height: 65%;
+    overflow: auto;
+  }
+
+  :global(.alarm-card) {
+    height: 50vh;
+    min-height: 311px;
+  }
+
+  :global(.card-title) {
+    border-bottom: dashed 1px darkgray;
+    padding-bottom: 10px;
+    width: 100%;
   }
 
   :global(.form-control) {
