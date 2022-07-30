@@ -1,5 +1,5 @@
 use nanoid::nanoid;
-use crate::schedule_thread::alarms_changed_payload::{AlarmRemovedOrAddedPayload, SerializableScheduleMessage};
+use crate::schedule_thread::alarms_changed_payload::{AlarmRemovedOrAddedPayload};
 use chrono::{DateTime, Local, TimeZone};
 
 pub fn timestamp_from_date_and_time(date: String, time: String) -> DateTime<Local> {
@@ -52,10 +52,6 @@ impl ScheduleMessage {
             execute_time_stamp: timestamp_from_date_and_time(vec[0].parse().unwrap(),
             vec[1].parse().unwrap())
         }
-    }
-
-    pub fn serialize(&self) -> SerializableScheduleMessage {
-        SerializableScheduleMessage::new(self.clone())
     }
 
     pub fn to_alarm_payload(&self) -> AlarmRemovedOrAddedPayload {

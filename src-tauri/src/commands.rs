@@ -1,4 +1,3 @@
-use chrono::{DateTime, Local, TimeZone};
 use tauri::{State, Window, Wry};
 use crate::{schedule_thread, ScheduleMessage};
 use crate::schedule_thread::alarms_changed_payload::SerializableScheduleMessage;
@@ -15,7 +14,7 @@ pub fn create_new_alarm(to_start_alarms_state: State<schedule_thread::RunningAla
 pub fn remove_alarm_by_id(to_start_alarms_state: State<schedule_thread::RunningAlarms>, window: Window<Wry>, id: String) {
     print!("here");
     let removed = to_start_alarms_state.time_stamp_map.lock().unwrap().remove(&id);
-    window.emit("alarm-removed", removed.unwrap().to_alarm_payload()).unwrap();
+    window.emit("alarm-removed-manually", removed.unwrap().to_alarm_payload()).unwrap();
 }
 
 #[tauri::command]

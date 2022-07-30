@@ -50,8 +50,6 @@ export const readSaveFile = async () => {
   if (Array.isArray(data)) {
     data = data.filter((alarm) => {
       let hasPassed = new Date(alarm.execute_time_stamp).getTime() > Date.now();
-      console.log(hasPassed);
-      //TODO: fire silent alarm, for when it passed with the app offline
       return hasPassed;
     });
 

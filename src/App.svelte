@@ -51,15 +51,20 @@
   };
 
   const initAndStartListeners = () => {
-    invoke('start_schedule_thread');
-    invoke('init_file_save');
+    invoke('start_schedule_thread')
+    invoke('init_file_save')
     listen('alarm-added', async event => {
-      alarms.append(event.payload.alarm);
-      await updateSaveFile($alarms);
-    });
+      alarms.append(event.payload.alarm)
+      alarms.sort($alarms)
+      await updateSaveFile($alarms)
+    })
     listen('alarm-removed', async event => {
       alarms.remove(event.payload.alarm.id);
       alerts.addAlert({message: event.payload.alarm.message});
+      await updateSaveFile($alarms);
+    });
+    listen('alarm-removed-manually', async event => {
+      alarms.remove(event.payload.alarm.id);
       await updateSaveFile($alarms);
     });
   };

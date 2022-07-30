@@ -53,7 +53,6 @@
   let alarmScheduler = () => {
     alarmIn = timeElapsedFormatter(new Date(alarm.execute_time_stamp))
     updateIntervalTimer()
-    console.log("updateTimer: ", updateTimer)
     timeoutRef = setTimeout(alarmScheduler, updateTimer)
   }
 
@@ -71,7 +70,7 @@
   <div class="time-stamp">
     {alarmIn}
   </div>
-  <div on:click={() => invoke('remove_alarm_by_id', {id: alarm.id})}>X</div>
+  <div class="remove-button" on:click={() => invoke('remove_alarm_by_id', {id: alarm.id})}>x</div>
 </div>
 
 <style lang="scss">
@@ -80,6 +79,17 @@
     font-size: 1rem;
     font-weight: 500;
     color: black;
+  }
+
+  .remove-button {
+    position: absolute;
+    top: -9px;
+    right: -3px;
+    padding: 1px 8px 2px 8px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    cursor:pointer;
   }
 
   .time-stamp {
@@ -91,5 +101,6 @@
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     padding: 8px;
     margin-bottom: 16px;
+    position: relative;
   }
 </style>

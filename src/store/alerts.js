@@ -16,7 +16,6 @@ const createAlertStore = () => {
     clear: () => set({}),
     remove,
     addAlert: ({message, duration = 1000}) => {
-      console.log("here")
       const getRandomId = () => '_' + Math.random().toString(36).substr(2, 9);
 
       const notificationKey = getRandomId();
