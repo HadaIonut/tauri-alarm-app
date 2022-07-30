@@ -19,6 +19,7 @@
   import {onMount} from "svelte";
   import AlertManager from "./AlertManager.svelte";
   import {alerts} from "./store/alerts.js";
+  import AlarmCard from "./AlarmCard.svelte";
 
   let myDate = formatDate(new Date(), 'y-M-d h:m');
   let alarmMessage = '';
@@ -76,15 +77,15 @@
 
 <main>
   <MaterialApp class="full-height">
-    <Row class="full-height">
+    <Row>
       <Col>
-        <Card>
+        <Card class="full-height">
           <CardTitle>
             List of alarms go here
           </CardTitle>
           <CardText>
             {#each $alarms as alarm }
-              <div>{alarm.message}</div>
+              <AlarmCard alarm="{alarm}"></AlarmCard>
             {/each}
           </CardText>
         </Card>
@@ -151,7 +152,7 @@
     }
   }
 
-  .full-height {
+  :global(.full-height) {
     height: 100%;
   }
 

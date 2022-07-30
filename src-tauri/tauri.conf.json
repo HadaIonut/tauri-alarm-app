@@ -26,7 +26,10 @@
       "category": "DeveloperTool",
       "copyright": "",
       "deb": {
-        "depends": []
+        "depends": [],
+        "files": {
+
+        }
       },
       "externalBin": [],
       "icon": [
@@ -36,7 +39,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "my.unique.id",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
